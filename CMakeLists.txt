@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.23)
 
 # set the project name
-project(libmcfp VERSION 1.3.3 LANGUAGES CXX)
+project(mcfp VERSION 1.3.4 LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -70,18 +70,18 @@ if(MSVC)
 	add_definitions(-DNOMINMAX)
 endif()
 
-add_library(libmcfp INTERFACE)
-add_library(libmcfp::libmcfp ALIAS libmcfp)
+add_library(mcfp INTERFACE)
+add_library(mcfp::mcfp ALIAS mcfp)
 
-target_compile_features(libmcfp INTERFACE cxx_std_20)
+target_compile_features(mcfp INTERFACE cxx_std_20)
 
 if(MSVC)
-	target_compile_definitions(libmcfp INTERFACE NOMINMAX=1)
+	target_compile_definitions(mcfp INTERFACE NOMINMAX=1)
 endif()
 
 # adding header sources just helps IDEs
-target_sources(libmcfp PUBLIC
-	FILE_SET libmcfp_headers TYPE HEADERS
+target_sources(mcfp PUBLIC
+	FILE_SET mcfp_headers TYPE HEADERS
 	BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
 	FILES
 	include/mcfp/detail/charconv.hpp
@@ -93,22 +93,34 @@ target_sources(libmcfp PUBLIC
 )
 
 # installation
-install(TARGETS libmcfp
-	EXPORT libmcfp
-	FILE_SET libmcfp_headers
+
+# Clean up old config files (with old names)
+file(GLOB OLD_CONFIG_FILES LIST_DIRECTORIES TRUE
+	${CMAKE_INSTALL_FULL_LIBDIR}/cmake/libmcfp
+	${CMAKE_INSTALL_FULL_LIBDIR}/cmake/mcfp/mcfp-*.cmake)
+
+if(OLD_CONFIG_FILES)
+	message(
+		WARNING "Installation will remove old config files: ${OLD_CONFIG_FILES}")
+	install(CODE "file(REMOVE_RECURSE ${OLD_CONFIG_FILES})")
+endif()
+
+install(TARGETS mcfp
+	EXPORT mcfp
+	FILE_SET mcfp_headers
 	DESTINATION include/)
 
-install(EXPORT libmcfp
-	NAMESPACE libmcfp::
-	DESTINATION lib/cmake/libmcfp
-	FILE "libmcfpTargets.cmake")
+install(EXPORT mcfp
+	NAMESPACE mcfp::
+	DESTINATION lib/cmake/mcfp
+	FILE "mcfpTargets.cmake")
 
-configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/libmcfpConfig.cmake.in
-	${CMAKE_CURRENT_BINARY_DIR}/libmcfpConfig.cmake
-	INSTALL_DESTINATION lib/cmake/libmcfp)
+configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/mcfpConfig.cmake.in
+	${CMAKE_CURRENT_BINARY_DIR}/mcfpConfig.cmake
+	INSTALL_DESTINATION lib/cmake/mcfp)
 
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libmcfpConfig.cmake"
-	DESTINATION lib/cmake/libmcfp)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mcfpConfig.cmake"
+	DESTINATION lib/cmake/mcfp)
 
 if(BUILD_TESTING)
 	add_subdirectory(test)

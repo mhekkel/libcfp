@@ -7,6 +7,8 @@ A library for parsing command line arguments and configuration files and making 
 
 There's a config file parser as well.
 
+> **_NOTE:_** The naming of libmcfp has changed again in version 1.3.4 reverting the rename of 1.3.3. To use libmcfp you should use find_package(mcfp) and link to mcfp::mcfp
+
 ## Synopsis
 
 ```c++
