@@ -96,7 +96,6 @@ target_sources(mcfp PUBLIC
 
 # Clean up old config files (with old names)
 file(GLOB OLD_CONFIG_FILES LIST_DIRECTORIES TRUE
-	${CMAKE_INSTALL_FULL_LIBDIR}/cmake/libmcfp
 	${CMAKE_INSTALL_FULL_LIBDIR}/cmake/mcfp/mcfp-*.cmake)
 
 if(OLD_CONFIG_FILES)
@@ -121,6 +120,20 @@ configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/mcfpConfig.cmake.in
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mcfpConfig.cmake"
 	DESTINATION lib/cmake/mcfp)
+
+# Install old config file, for use in older code
+
+install(EXPORT mcfp
+	NAMESPACE libmcfp::
+	DESTINATION lib/cmake/libmcfp
+	FILE "libmcfpTargets.cmake")
+
+configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/libmcfpConfig.cmake.in
+	${CMAKE_CURRENT_BINARY_DIR}/libmcfpConfig.cmake
+	INSTALL_DESTINATION lib/cmake/libmcfp)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libmcfpConfig.cmake"
+	DESTINATION lib/cmake/libmcfp)
 
 if(BUILD_TESTING)
 	add_subdirectory(test)
