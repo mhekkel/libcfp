@@ -6,10 +6,10 @@
 # modification, are permitted provided that the following conditions are met:
 #
 # 1. Redistributions of source code must retain the above copyright notice, this
-#    list of conditions and the following disclaimer
+# list of conditions and the following disclaimer
 # 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
 #
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 # ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -53,19 +53,19 @@ if(MSVC)
 	# make msvc standards compliant...
 	add_compile_options(/permissive-)
 
-    if(${CMAKE_SYSTEM_VERSION} GREATER_EQUAL 10) # Windows 10
-        add_definitions(-D _WIN32_WINNT=0x0A00)
-    elseif(${CMAKE_SYSTEM_VERSION} EQUAL 6.3) # Windows 8.1
-        add_definitions(-D _WIN32_WINNT=0x0603)
-    elseif(${CMAKE_SYSTEM_VERSION} EQUAL 6.2) # Windows 8
-        add_definitions(-D _WIN32_WINNT=0x0602)
-    elseif(${CMAKE_SYSTEM_VERSION} EQUAL 6.1) # Windows 7
-        add_definitions(-D _WIN32_WINNT=0x0601)
-    elseif(${CMAKE_SYSTEM_VERSION} EQUAL 6.0) # Windows Vista
-        add_definitions(-D _WIN32_WINNT=0x0600)
-    else() # Windows XP (5.1)
-        add_definitions(-D _WIN32_WINNT=0x0501)
-    endif()
+	if(${CMAKE_SYSTEM_VERSION} GREATER_EQUAL 10) # Windows 10
+		add_definitions(-D _WIN32_WINNT=0x0A00)
+	elseif(${CMAKE_SYSTEM_VERSION} EQUAL 6.3) # Windows 8.1
+		add_definitions(-D _WIN32_WINNT=0x0603)
+	elseif(${CMAKE_SYSTEM_VERSION} EQUAL 6.2) # Windows 8
+		add_definitions(-D _WIN32_WINNT=0x0602)
+	elseif(${CMAKE_SYSTEM_VERSION} EQUAL 6.1) # Windows 7
+		add_definitions(-D _WIN32_WINNT=0x0601)
+	elseif(${CMAKE_SYSTEM_VERSION} EQUAL 6.0) # Windows Vista
+		add_definitions(-D _WIN32_WINNT=0x0600)
+	else() # Windows XP (5.1)
+		add_definitions(-D _WIN32_WINNT=0x0501)
+	endif()
 
 	add_definitions(-DNOMINMAX)
 endif()
@@ -117,12 +117,16 @@ install(EXPORT mcfp
 configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/mcfpConfig.cmake.in
 	${CMAKE_CURRENT_BINARY_DIR}/mcfpConfig.cmake
 	INSTALL_DESTINATION lib/cmake/mcfp)
+write_basic_package_version_file(
+	${CMAKE_CURRENT_BINARY_DIR}/mcfpConfigVersion.cmake
+	VERSION ${PROJECT_VERSION}
+	COMPATIBILITY AnyNewerVersion)
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mcfpConfig.cmake"
+ 	"${CMAKE_CURRENT_BINARY_DIR}/mcfpConfigVersion.cmake"
 	DESTINATION lib/cmake/mcfp)
 
 # Install old config file, for use in older code
-
 install(EXPORT mcfp
 	NAMESPACE libmcfp::
 	DESTINATION lib/cmake/libmcfp
@@ -131,8 +135,13 @@ install(EXPORT mcfp
 configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/libmcfpConfig.cmake.in
 	${CMAKE_CURRENT_BINARY_DIR}/libmcfpConfig.cmake
 	INSTALL_DESTINATION lib/cmake/libmcfp)
+write_basic_package_version_file(
+	${CMAKE_CURRENT_BINARY_DIR}/libmcfpConfigVersion.cmake
+	VERSION ${PROJECT_VERSION}
+	COMPATIBILITY AnyNewerVersion)
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libmcfpConfig.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/libmcfpConfigVersion.cmake"
 	DESTINATION lib/cmake/libmcfp)
 
 if(BUILD_TESTING)
@@ -142,4 +151,3 @@ endif()
 if(BUILD_DOCUMENTATION)
 	add_subdirectory(docs)
 endif()
-
