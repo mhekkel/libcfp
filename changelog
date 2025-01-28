@@ -1,5 +1,6 @@
 Version 1.3.5
 - Install a cmake version file
+- Avoid using catch2 version 2
 
 Version 1.3.4
 - Renaming the mcfp to libmcfp was not very consistent
