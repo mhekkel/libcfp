@@ -104,6 +104,13 @@ if(OLD_CONFIG_FILES)
 	install(CODE "file(REMOVE_RECURSE ${OLD_CONFIG_FILES})")
 endif()
 
+# And an old include file
+if(EXISTS ${CMAKE_INSTALL_FULL_INCLUDEDIR}/mcfp.hpp)
+	message(
+		WARNING "Installation will remove old header file: ${CMAKE_INSTALL_FULL_INCLUDEDIR}/mcfp.hpp")
+	install(CODE "file(REMOVE ${CMAKE_INSTALL_FULL_INCLUDEDIR}/mcfp.hpp)")
+endif()
+
 install(TARGETS mcfp
 	EXPORT mcfp
 	FILE_SET mcfp_headers
