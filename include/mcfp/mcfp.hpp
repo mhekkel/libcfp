@@ -114,6 +114,16 @@ class config
 	}
 
 	/**
+	 * @brief Get the last option name, for use in error reporting
+	 * 
+	 * @return std::string The last parsed or requested option
+	 */
+	std::string get_last_option() const
+	{
+		return get_last_option_storage();
+	}
+
+	/**
 	 * @brief Simply return true if the option with \a name has a value assigned
 	 * 
 	 * @param name The name of the option
@@ -174,6 +184,9 @@ class config
 	auto get(std::string_view name, std::error_code &ec) const
 	{
 		using return_type = std::remove_cv_t<T>;
+
+		// store name for inspection later on
+		get_last_option_storage() = name;
 
 		return_type result{};
 		auto opt = m_impl->get_option(name);
@@ -420,6 +433,9 @@ class config
 						name.insert(name.end(), static_cast<char>(ch));
 					else if (is_eoln(ch))
 					{
+						// store name for inspection later on
+						get_last_option_storage() = name;
+
 						auto opt = m_impl->get_option(name);
 
 						if (opt == nullptr)
@@ -446,6 +462,9 @@ class config
 						state = State::VALUE_START;
 					else if (is_eoln(ch))
 					{
+						// store name for inspection later on
+						get_last_option_storage() = name;
+
 						auto opt = m_impl->get_option(name);
 
 						if (opt == nullptr)
@@ -468,6 +487,9 @@ class config
 				case State::VALUE:
 					if (is_eoln(ch))
 					{
+						// store name for inspection later on
+						get_last_option_storage() = name;
+
 						auto opt = m_impl->get_option(name);
 
 						if (opt == nullptr)
@@ -567,6 +589,9 @@ class config
 					s_arg = s_arg.substr(0, p);
 				}
 
+				// store name for inspection later on
+				get_last_option_storage() = s_arg;
+
 				opt = m_impl->get_option(s_arg);
 				if (opt == nullptr)
 				{
@@ -592,6 +617,8 @@ class config
 
 				while (*arg != 0 and not ec)
 				{
+					// store name for inspection later on
+					get_last_option_storage() = *arg;
 					opt = m_impl->get_option(*arg++);
 
 					if (opt == nullptr)
@@ -633,6 +660,12 @@ class config
 	config &operator=(const config &) = delete;
 
 	/// @cond
+
+	static std::string &get_last_option_storage()
+	{
+		thread_local static std::string s_last_option;
+		return s_last_option;
+	}
 
 	struct config_impl_base
 	{

@@ -7,6 +7,7 @@
 
 int main(int argc, char * const argv[])
 {
+    // config is a singleton
 	auto &config = mcfp::config::instance();
 
 	// Initialise the config object. This can be done more than once,
@@ -47,7 +48,7 @@ int main(int argc, char * const argv[])
 	config.parse(argc, argv, ec);
 	if (ec)
 	{
-		std::cerr << "Error parsing arguments: " << ec.message() << std::endl;
+        std::cerr << "Error parsing argument " << std::quoted(config.get_last_option()) << ": " << ec.message() << std::endl;
 		exit(1);
 	}
 
@@ -67,7 +68,7 @@ int main(int argc, char * const argv[])
 	config.parse_config_file("config", "example.conf", { "." }, ec);
 	if (ec)
 	{
-		std::cerr << "Error parsing config file: " << ec.message() << std::endl;
+        std::cerr << "Error parsing config file, option " << std::quoted(config.get_last_option()) << ": " << ec.message() << std::endl;
 		exit(1);
 	}
 
